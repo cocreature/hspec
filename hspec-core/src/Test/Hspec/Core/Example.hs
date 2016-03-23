@@ -85,7 +85,12 @@ instance Example Expectation where
 hunitFailureToResult :: HUnit.HUnitFailure -> Result
 hunitFailureToResult e = case e of
 #if MIN_VERSION_HUnit(1,3,0)
-  HUnit.HUnitFailure mLoc err -> Fail location err
+  HUnit.HUnitFailure mLoc err ->
+#if MIN_VERSION_HUnit(1,4,0)
+      Fail location (HUnit.formatFailureReason err)
+#else
+      Fail location err
+#endif
     where
       location = case mLoc of
         Nothing -> Nothing
